@@ -1,7 +1,7 @@
 let totalTime = {
-    seconds:0,
+    hours:0,
     minutes:0,
-    hours:0
+    seconds:0
 }
 
 document.querySelectorAll("ytd-playlist-video-renderer").forEach( (element) => {
