@@ -1,37 +1,33 @@
-function main(){
- const durationContainers = Array.from(document.getElementById("items").getElementsByClassName("style-scope ytd-thumbnail-overlay-time-status-renderer"));
- var durations = durationContainers.map(__span => __span.innerText).map(duration => {
-   if (duration) {
-     return duration.split(":").map(duration => parseInt(duration)).reverse().reduce((acc, e, i) => {
-       return acc + e * Math.pow(60, i);
-     });
-   }
-   else {
-     return 0;
-   }
- });
- durations = durations.filter(element => 0 !== element);
- console.log(durations);
- const totalSeconds = durations.reduce((acc, e, _) => {
-   return acc + e;
- });
- console.log(totalSeconds);
- 
+let totalTime = {
+    seconds:0,
+    minutes:0,
+    hours:0
+}
 
- const seconds = totalSeconds % 60;
- const minutes = Math.floor(totalSeconds / 60) % 60;
- const hours = Math.floor(totalSeconds / 3600);
- const totalTime = "Play Time: " + hours + ":" + minutes + ":" + seconds;
+document.querySelectorAll("ytd-playlist-video-renderer").forEach( (element) => {
+    try{
+        let timelist = element.querySelector("#overlays")
+        .querySelector("ytd-thumbnail-overlay-time-status-renderer")
+        .querySelector("span")
+        .firstChild.data.trim().split(':')
 
- console.log(totalTime);
+        if(timelist.length == 2){
+            totalTime.minutes += parseInt(timelist[0])
+            totalTime.seconds += parseInt(timelist[1])
+        } else if (timelist.length == 3){  
+            totalTime.hours += parseInt(timelist[0])
+            totalTime.minutes += parseInt(timelist[1])
+            totalTime.seconds += parseInt(timelist[2])
+        }
+    } catch(err){
+       console.log(err)
+    }
 
- const list = document.getElementById("start-actions");
- const div = document.createElement("div");
- div.class = "style-scope style-grey-text";
- const text = document.createElement("p");
- text.innerText = totalTime;
- div.appendChild(text);
- 
- list.insertBefore(div, list.childNodes[1]);
-};
-main();
+})
+
+totalTime.minutes += parseInt(totalTime.seconds/60)
+totalTime.seconds = totalTime.seconds % 60
+
+totalTime.hours += parseInt(totalTime.minutes/60)
+totalTime.minutes = totalTime.minutes % 60
+console.log(totalTime)
